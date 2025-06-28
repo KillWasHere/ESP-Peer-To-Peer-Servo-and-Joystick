@@ -47,7 +47,6 @@ void loop() {
   int adjustedX = xVal - 2048;  // When xVal is 2048, adjustedX = 0.
   int adjustedY = yVal - 2048;
 
-  // For debugging
   Serial.print("Adjusted X: ");
   Serial.print(adjustedX);
   Serial.print(" | Adjusted Y: ");
