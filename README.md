@@ -1,6 +1,6 @@
 # ESP-Peer-To-Peer-Servo-and-Joystick
 
-This project demonstrates a wireless, peer-to-peer joystick-to-servo system using three ESP32 microcontrollers and ESP-NOW. A Wokwi simulation (non-P2P) of the core `main.cpp` logic is also included.
+This project demonstrates a wireless, peer-to-peer joystick-to-servo system using three ESP32-CAM microcontrollers and ESP-NOW. A Wokwi simulation (non-P2P) of the core `main.cpp` logic is also included.
 
 ---
 
@@ -22,8 +22,9 @@ The Wokwi demo uses **`src/main.cpp`** to drive two servos directly from a joyst
 ├─ lib/                  # External libraries
 ├─ src/
 │   ├─ main.cpp          # Single-ESP32 joystick→servo demo (Wokwi)
-│   ├─ master.cpp        # ESP32 "Master" (joystick transmitter via ESP-NOW)
-│   └─ slave.cpp         # ESP32-CAM "Slave" (servo receiver via ESP-NOW)
+│   ├─ master.cpp        # ESP32-CAM “Master” (joystick transmitter via ESP-NOW)
+│   ├─ slave.cpp         # ESP32-CAM “Slave” (servo receiver via ESP-NOW)
+│   └─ camera_stream.cpp # ESP32-CAM camera streaming (IDE example)
 ├─ platformio.ini        # PlatformIO build configuration
 └─ README.md             # This file
 ```
@@ -35,7 +36,7 @@ The Wokwi demo uses **`src/main.cpp`** to drive two servos directly from a joyst
 ### Prerequisites
 
 * [PlatformIO](https://platformio.org/) (VSCode or CLI)
-* **Three** ESP32 boards (e.g. ESP32 DevKit + ESP32-CAM)
+* **Three** ESP32-CAM boards (two for joystick/servo P2P, one for camera stream)
 * Analog joystick module
 * Two hobby servos (5 V, \~1 A stall current)
 * 5 V power supply (≥2 A)
@@ -55,7 +56,7 @@ cd ESP-Peer-To-Peer-Servo-and-Joystick
 
 ### 3. Hardware Setup
 
-#### Master (ESP32 + Joystick)
+#### Master (ESP32-CAM + Joystick)
 
 ```
 Joystick VCC → 5 V
@@ -67,24 +68,31 @@ Joystick Y → GPIO 35
 #### Slave (ESP32-CAM + Pan-Tilt Bracket)
 
 ```
-Power servos and camera with 5 V (tie GND to master)
+Power servos with 5 V (tie GND to master)
 Servo pan signal → GPIO 14
 Servo tilt signal → GPIO 15
-Mount camera on pan-tilt bracket
+Mount device (camera or sensor) on pan-tilt bracket
 ```
 
-> **Important:** Share GND across all modules.
+#### Camera Streamer (ESP32-CAM)
+
+```
+Flash ESP32-CAM with Arduino IDE example "CameraWebServer"
+Connect camera power & GND
+Access camera via IP address on Wi-Fi network
+```
 
 ### 4. Configure ESP-NOW Peers
 
-* In **`src/master.cpp`**, replace `receiverAddress[]` with your ESP32-CAM’s MAC (use `Serial.println(WiFi.macAddress());`).
+* In **`src/master.cpp`**, replace `receiverAddress[]` with your servo-slave ESP32-CAM’s MAC (print via `Serial.println(WiFi.macAddress());`).
 * **`src/slave.cpp`** requires no MAC edits.
 
 ### 5. Build & Upload
 
 1. Open the **PlatformIO** sidebar in VSCode.
-2. Select the **master** environment → Upload to your joystick ESP32.
-3. Select the **slave** environment → Upload to your ESP32-CAM.
+2. Select **master** environment → Upload to joystick ESP32-CAM.
+3. Select **slave** environment → Upload to servo ESP32-CAM.
+4. Use Arduino IDE to flash **camera\_stream.cpp** (IDE example) to the third ESP32-CAM.
 
 ---
 
@@ -110,16 +118,22 @@ Mount camera on pan-tilt bracket
 * Drives servos on GPIO 14/15
 * Serial debug output
 
+### `src/camera_stream.cpp` (IDE Example)
+
+* Standard ESP32-CAM "CameraWebServer" sketch
+* Streams MJPEG to a browser
+* Provided by Arduino IDE's ESP32 boards package
+
 ---
 
 ## 🌐 Wireless Protocol
 
 * **ESP-NOW**: Low-latency, peer-to-peer, no router needed
-* **Three MCUs**:
+* **Three ESP32-CAM MCUs**:
 
   * Master (joystick sender)
-  * Slave (ESP32-CAM servo head)
-  * Optional 3rd MCU for expansion
+  * Slave (servo head)
+  * Camera streamer (IDE example)
 
 ---
 
@@ -128,7 +142,7 @@ Mount camera on pan-tilt bracket
 ```ini
 [env:master]
 platform = espressif32
-board    = esp32dev
+board    = esp32cam
 framework= arduino
 src_dir  = src
 
@@ -140,5 +154,3 @@ src_dir  = src
 ```
 
 ---
-
-Happy tinkering! 🚗🤖📡
