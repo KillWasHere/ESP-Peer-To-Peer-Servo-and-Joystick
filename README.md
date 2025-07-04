@@ -40,7 +40,7 @@ The Wokwi demo uses **`src/main.cpp`** to drive two servos directly from a joyst
 * Analog joystick module
 * Two hobby servos (5 V, \~1 A stall current)
 * 5 V power supply (≥2 A)
-* Common GND wiring
+* Common GND wiring (for boards sharing the same power)
 
 ### 1. Clone the Repo
 
