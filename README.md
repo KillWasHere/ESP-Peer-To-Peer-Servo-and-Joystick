@@ -38,7 +38,7 @@ The Wokwi demo uses **`src/main.cpp`** to drive two servos directly from a joyst
 * [PlatformIO](https://platformio.org/) (VSCode or CLI)
 * **Three** ESP32-CAM boards (two for joystick/servo P2P, one for camera stream)
 * Analog joystick module
-* Two hobby servos (5 V, \~1 A stall current)
+* Two hobby servos (5 V, \~1 A stall current each)
 * 5 V power supply (≥2 A)
 * Common GND wiring (for boards sharing the same power)
 
