@@ -1,4 +1,3 @@
-// === RECEIVER: ESP32-CAM with Servo Control ===
 #include <esp_now.h>
 #include <WiFi.h>
 #include <ESP32Servo.h>
